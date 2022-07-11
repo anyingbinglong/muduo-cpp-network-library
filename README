@@ -26,11 +26,14 @@ license that can be found in the License file.
 
 客户端：用于编写客户端程序。采用单线程 和 Reactor模式进行实现。
 
-服务端：用于编写服务端程序。服务端的线程模型，采用非阻塞IO + one  Loop  per  thread模型，主线程和线程池中的每个工作线程，均有一个event Loop（也就是Reactor），Reactor模式在进行实现时，使用epoll IO多路复用模型。此种实现方式，可以实现服务端程序对百万并发连接请求的处理。
+服务端：用于编写服务端程序。服务端的线程模型，采用非阻塞IO + one  Loop  per  thread模型，主线程和线程池中的每个工作线程，均有一个event Loop（也就是Reactor），
+       Reactor模式在进行实现时，使用epoll IO多路复用模型。此种实现方式，可以实现服务端程序对百万并发连接请求的处理。
 
 定时器：用于编写定时任务。将定时器放入定时器容器中进行管理，为实现在定时器容器中，高效的查找和删除超时定时器，定时器容器采用std::set进行实现，
-同时为将socket读写事件和定时器超时事件，进行统一管理，使用timerfd_create创建系统定时器，并将创建的系统定时器文件描述符和socket文件描述符，均加入到epoll内核事件监听表中，进行统一监听。
+       同时为将socket读写事件和定时器超时事件，进行统一管理，使用timerfd_create创建系统定时器，并将创建的系统定时器文件描述符和socket文件描述符，
+       均加入到epoll内核事件监听表中，进行统一监听。
 
 socket API封装：对socket 网络编程API进行封装，供其他模块实现时调用。
 
-Buffer封装：对std::vector容器进行了进一步的封装。由于，socket在进行读写操作时，均会出现无法在一次读写操作中接收和发送全部数据的情况，所以，就需要在客户端和服务端的每一个socket 连接上，均建立input buffer和output buffer。
+Buffer封装：对std::vector容器进行了进一步的封装。由于，socket在进行读写操作时，均会出现无法在一次读写操作中接收和发送全部数据的情况，
+           所以，就需要在客户端和服务端的每一个socket 连接上，均建立input buffer和output buffer。
